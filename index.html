@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#2e7d32">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="VetApp">
+<title>VetApp</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header id="appHeader">
+  <button class="back-btn" onclick="goHome()">←</button>
+  <span id="appTitle">🌿 VetApp</span>
+</header>
+
+<div class="notif-overlay" id="notifOverlay">
+  <div class="notif-modal">
+    <div class="notif-icon">
+      <svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    </div>
+    <h2 id="notifTitle">Записи на сегодня</h2>
+    <div class="notif-sub" id="notifSub">—</div>
+    <div id="notifList"></div>
+    <div class="notif-actions">
+      <button class="notif-btn-close" onclick="closeNotif()">Закрыть</button>
+      <button class="notif-btn-ok" onclick="goToCalendarToday()">Открыть календарь</button>
+    </div>
+  </div>
+</div>
+
+<div class="tab-content active" id="tab-home">
+  <div class="home-greeting">
+    <div class="hello">Привет, доктор! 👋</div>
+    <div class="sub">Что будем делать сегодня?</div>
+  </div>
+  <div id="permBannerPlaceholder"></div>
+  <div class="home-stats">
+    <div class="stat-card"><div class="stat-num" id="statPatients">0</div><div class="stat-label">Пациентов</div></div>
+    <div class="stat-card"><div class="stat-num" id="statDrugs">0</div><div class="stat-label">Препаратов</div></div>
+    <div class="stat-card"><div class="stat-num" id="statNotes">0</div><div class="stat-label">Памяток</div></div>
+    <div class="stat-card"><div class="stat-num" id="statAppts">0</div><div class="stat-label">Записей</div></div>
+  </div>
+  <div class="home-grid">
+    <div class="home-tile" onclick="goTo('calc')">
+      <div class="tile-icon"><svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="10" y2="14"/><line x1="14" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="10" y2="18"/><line x1="14" y1="18" x2="16" y2="18"/></svg></div>
+      <div class="tile-title">Калькулятор</div>
+      <div class="tile-desc">Расчёт доз, ИПС, инфузии</div>
+    </div>
+    <div class="home-tile" onclick="goTo('calendar')" id="calendarTile">
+      <div class="tile-icon"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/><circle cx="8" cy="14" r="1"/><circle cx="12" cy="14" r="1"/><circle cx="16" cy="14" r="1"/><circle cx="8" cy="18" r="1"/><circle cx="12" cy="18" r="1"/></svg></div>
+      <div class="tile-title">Календарь</div>
+      <div class="tile-desc">Записи по дням</div>
+      <div class="tile-badge" id="calendarBadge" style="display:none;">0</div>
+    </div>
+    <div class="home-tile" onclick="goTo('search')">
+      <div class="tile-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16" y1="16" x2="21" y2="21"/></svg></div>
+      <div class="tile-title">Пациенты</div>
+      <div class="tile-desc">Поиск и картотека</div>
+    </div>
+    <div class="home-tile" onclick="goTo('add')">
+      <div class="tile-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+      <div class="tile-title">Добавить</div>
+      <div class="tile-desc">Новый приём или вакцинация</div>
+    </div>
+    <div class="home-tile" onclick="goTo('drugs')">
+      <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M10.5 20.5a5 5 0 0 1-7-7l8-8a5 5 0 0 1 7 7l-8 8z"/><line x1="8.5" y1="8.5" x2="15.5" y2="15.5"/></svg></div>
+      <div class="tile-title">Препараты</div>
+      <div class="tile-desc">База с дозами</div>
+    </div>
+    <div class="home-tile" onclick="goTo('notes')">
+      <div class="tile-icon"><svg viewBox="0 0 24 24"><path d="M4 4a2 2 0 0 1 2-2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg></div>
+      <div class="tile-title">Памятки</div>
+      <div class="tile-desc">Протоколы и справочники</div>
+    </div>
+    <div class="home-tile" onclick="goTo('settings')">
+      <div class="tile-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+      <div class="tile-title">Настройки</div>
+      <div class="tile-desc">Тема, экспорт, бэкап</div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-content" id="tab-calc">
+  <div class="acc" id="acc1">
+    <div class="acc-header" onclick="toggleAcc('acc1')"><span>💊 Расчёт по препарату</span><span class="arrow">▼</span></div>
+    <div class="acc-body">
+      <label>Название препарата</label>
+      <div class="autocomplete-wrap">
+        <input type="text" id="drugSearch" placeholder="Начни вводить (Амок...)" autocomplete="off" oninput="showDrugAutocomplete()" onfocus="showDrugAutocomplete()">
+        <div class="autocomplete-list" id="drugAutocomplete"></div>
+      </div>
+      <label>Вид животного</label>
+      <div class="species-row">
+        <button type="button" id="sp-dog" class="active" onclick="setSpecies('dog')">🐕 Собака</button>
+        <button type="button" id="sp-cat" onclick="setSpecies('cat')">🐈 Кошка</button>
+      </div>
+      <label>Вес (кг)</label>
+      <input type="number" id="calcWeight" placeholder="12.5" step="0.1">
+      <label>Доза (мг/кг)</label>
+      <input type="number" id="calcDose" placeholder="Подтянется из базы" step="0.01">
+      <div class="hint-box" id="doseHint"></div>
+      <button class="btn" onclick="calcByDrug()">Рассчитать</button>
+      <div class="result" id="calcResult"></div>
+    </div>
+  </div>
+  <div class="acc" id="acc2">
+    <div class="acc-header" onclick="toggleAcc('acc2')"><span>📝 Ручной расчёт</span><span class="arrow">▼</span></div>
+    <div class="acc-body">
+      <label>Вес (кг)</label>
+      <input type="number" id="weight" placeholder="12.5" step="0.1">
+      <label>Доза (мг/кг)</label>
+      <input type="number" id="dose" placeholder="10" step="0.01">
+      <button class="btn" onclick="calcDose()">Рассчитать</button>
+      <div class="result" id="manualResult"></div>
+    </div>
+  </div>
+  <div class="acc" id="acc3">
+    <div class="acc-header" onclick="toggleAcc('acc3')"><span>💉 ИПС-калькулятор</span><span class="arrow">▼</span></div>
+    <div class="acc-body">
+      <label>Препарат</label>
+      <select id="ipsDrug" onchange="updateIpsForm()">
+        <option value="lidocaine2">Лидокаин 2% (20 мг/мл)</option>
+        <option value="lidocaine10">Лидокаин 10% (100 мг/мл)</option>
+        <option value="domitor">Домитор 1 мг/мл</option>
+        <option value="ddm01">Дексмедетомидин 0.1 мг/мл</option>
+        <option value="ddm05">Дексмедетомидин 0.5 мг/мл</option>
+        <option value="zoletil">Золетил 100 мг/мл</option>
+        <option value="tramadol">Трамадол 50 мг/мл</option>
+        <option value="cerucal">Церукал 5 мг/мл</option>
+        <option value="noradrenaline">Норадреналин 2 мг/мл</option>
+        <option value="dopamine4">Допамин 4%</option>
+        <option value="dopamine05">Допамин 0.5%</option>
+        <option value="dobutamine">Добутамин</option>
+      </select>
+      <div class="hint-box show" id="ipsHint"></div>
+      <label>Вес (кг)</label>
+      <input type="number" id="ipsWeight" placeholder="5" step="0.1">
+      <label>Доза</label>
+      <input type="number" id="ipsDose" placeholder="50" step="0.01">
+      <label>Объём шприца (мл)</label>
+      <input type="number" id="ipsSyringe" value="50" step="1">
+      <label>Скорость инфузии (мл/ч)</label>
+      <input type="number" id="ipsRate" value="10" step="0.5">
+      <button class="btn" onclick="calcIps()">Рассчитать</button>
+      <div class="result" id="ipsResult"></div>
+    </div>
+  </div>
+  <div class="acc" id="acc4">
+    <div class="acc-header" onclick="toggleAcc('acc4')"><span>💧 Скорость инфузии</span><span class="arrow">▼</span></div>
+    <div class="acc-body">
+      <label>Вес (кг)</label>
+      <input type="number" id="infWeight" placeholder="20" step="0.1">
+      <label>Скорость (мл/кг/ч)</label>
+      <input type="number" id="infRate" value="3" step="0.1">
+      <label>Коэффициент капельницы (кап/мл)</label>
+      <input type="number" id="infDrop" value="20" step="1">
+      <button class="btn" onclick="calcInf()">Рассчитать</button>
+      <div class="result" id="infResult"></div>
+    </div>
+  </div>
+  <div class="acc" id="acc5">
+    <div class="acc-header" onclick="toggleAcc('acc5')"><span>🩸 Альбумин</span><span class="arrow">▼</span></div>
+    <div class="acc-body">
+      <label>Концентрация</label>
+      <select id="albConc"><option value="20">20%</option><option value="10">10%</option></select>
+      <label>Текущий альбумин (ммоль/л)</label>
+      <input type="number" id="albCurrent" placeholder="19" step="0.1">
+      <label>Целевой альбумин (ммоль/л)</label>
+      <input type="number" id="albTarget" value="30" step="0.1">
+      <label>Вес (кг)</label>
+      <input type="number" id="albWeight" placeholder="5" step="0.1">
+      <label>Время инфузии (ч)</label>
+      <input type="number" id="albTime" value="12" step="1">
+      <button class="btn" onclick="calcAlb()">Рассчитать</button>
+      <div class="result" id="albResult"></div>
+    </div>
+  </div>
+  <div class="acc" id="acc6">
+    <div class="acc-header" onclick="toggleAcc('acc6')"><span>💧 Калия хлорид 4%</span><span class="arrow">▼</span></div>
+    <div class="acc-body">
+      <label>Вес (кг)</label>
+      <input type="number" id="kWeight" placeholder="5" step="0.1">
+      <label>Калий крови (ммоль/л)</label>
+      <input type="number" id="kLevel" placeholder="3.0" step="0.1">
+      <button class="btn" onclick="calcK()">Рассчитать</button>
+      <div class="result" id="kResult"></div>
+    </div>
+  </div>
+  <div class="acc" id="acc7">
+    <div class="acc-header" onclick="toggleAcc('acc7')"><span>🩸 Цельная кровь</span><span class="arrow">▼</span></div>
+    <div class="acc-body">
+      <label>Вес (кг)</label>
+      <input type="number" id="bWeight" placeholder="5" step="0.1">
+      <label>Текущий Ht (%)</label>
+      <input type="number" id="bCurrent" placeholder="14" step="0.1">
+      <label>Целевой Ht (%)</label>
+      <input type="number" id="bTarget" placeholder="30" step="0.1">
+      <button class="btn" onclick="calcBlood()">Рассчитать</button>
+      <div class="result" id="bloodResult"></div>
+    </div>
+  </div>
+</div>
+
+<div class="tab-content" id="tab-calendar">
+  <div class="card">
+    <div class="cal-header">
+      <button onclick="calPrevMonth()">‹</button>
+      <div class="cal-title" id="calMonthLabel">—</div>
+      <button onclick="calNextMonth()">›</button>
+    </div>
+    <div style="text-align:center; margin-bottom:10px;">
+      <button class="cal-today-btn" onclick="calGoToday()">Сегодня</button>
+    </div>
+    <div class="cal-weekdays">
+      <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+  </div>
+  <div id="calDayPanel"></div>
+</div>
+
+<div class="tab-content" id="tab-add">
+  <div class="card">
+    <h3>🐶 Новый пациент</h3>
+    <label>Кличка</label>
+    <input type="text" id="pName" placeholder="Гриша">
+    <label>Вид</label>
+    <input type="text" id="pSpecies" placeholder="Собака / Кошка">
+    <label>Владелец</label>
+    <input type="text" id="pOwner" placeholder="ФИО">
+    <label>Телефон</label>
+    <input type="tel" id="pPhone" placeholder="+7...">
+    <label>Дата</label>
+    <input type="date" id="recordDate">
+    <label>Тип записи</label>
+    <select id="recordType" onchange="toggleRecordFields()">
+      <option value="appointment">📋 Приём</option>
+      <option value="vaccination">💉 Вакцинация</option>
+    </select>
+    <div id="appointmentFields">
+      <label>Заметка</label>
+      <input type="text" id="note" placeholder="осмотр, жалобы">
+    </div>
+    <div id="vaccinationFields" style="display:none">
+      <label>Препарат</label>
+      <input type="text" id="vaxDrug" placeholder="Нобивак DHPPi">
+    </div>
+    <button class="btn" onclick="savePatient()">Сохранить</button>
+  </div>
+</div>
+
+<div class="tab-content" id="tab-search">
+  <div class="card">
+    <h3>🔍 Поиск пациентов</h3>
+    <input type="text" class="search-box" id="searchPatient" placeholder="🔍 Кличка, владелец, телефон" oninput="renderSearch()">
+    <div id="searchList"><div class="empty">Пока никого нет</div></div>
+  </div>
+</div>
+
+<div class="tab-content" id="tab-patient"><div id="patientContent"></div></div>
+
+<div class="tab-content" id="tab-drugs">
+  <div class="acc" id="acc-add-drug">
+    <div class="acc-header" onclick="toggleAcc('acc-add-drug')"><span>➕ Добавить препарат</span><span class="arrow">▼</span></div>
+    <div class="acc-body">
+      <label>Название *</label>
+      <input type="text" id="dName" placeholder="Амоксиклав">
+      <label>Категория</label>
+      <select id="dCategory">
+        <option value="">— выбери —</option>
+        <option value="💊 Антибиотики">💊 Антибиотики</option>
+        <option value="💉 НПВС">💉 НПВС</option>
+        <option value="🩹 Антисептики">🩹 Антисептики</option>
+        <option value="😌 Седативные">😌 Седативные</option>
+        <option value="💧 Инфузионные растворы">💧 Инфузионные растворы</option>
+        <option value="🫀 Кардиология">🫀 Кардиология</option>
+        <option value="🫁 Бронхолитики">🫁 Бронхолитики</option>
+        <option value="🩸 Гормоны">🩸 Гормоны</option>
+        <option value="🪱 Антигельминтики">🪱 Антигельминтики</option>
+        <option value="🦠 Противогрибковые">🦠 Противогрибковые</option>
+        <option value="💊 Витамины">💊 Витамины</option>
+        <option value="🩹 Местные">🩹 Местные</option>
+        <option value="💊 Гастропротекторы">💊 Гастропротекторы</option>
+        <option value="💊 Противорвотные">💊 Противорвотные</option>
+        <option value="💊 Антигистаминные">💊 Антигистаминные</option>
+        <option value="💊 Опиоиды">💊 Опиоиды</option>
+        <option value="💊 Анестетики">💊 Анестетики</option>
+        <option value="💊 Урология">💊 Урология</option>
+        <option value="💊 Сорбенты">💊 Сорбенты</option>
+        <option value="💊 Антидоты">💊 Антидоты</option>
+        <option value="💊 Гемостатики">💊 Гемостатики</option>
+        <option value="📋 Прочее">📋 Прочее</option>
+      </select>
+      <div class="section-title">🐕 Доза для собаки (мг/кг)</div>
+      <input type="text" id="dDoseDog" placeholder="12,5">
+      <div class="section-title">🐈 Доза для кошки (мг/кг)</div>
+      <input type="text" id="dDoseCat" placeholder="10">
+      <label>Заметка</label>
+      <input type="text" id="dNote" placeholder="в/м, курс 5 дней">
+      <button class="btn" onclick="addDrug()">Сохранить</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>💊 База препаратов</h3>
+    <input type="text" class="search-box" id="searchDrug" placeholder="🔍 Название" oninput="renderDrugs()">
+    <div id="drugsList"></div>
+  </div>
+</div>
+
+<div class="tab-content" id="tab-notes">
+  <div class="acc" id="acc-add-note">
+    <div class="acc-header" onclick="toggleAcc('acc-add-note')"><span>➕ Добавить памятку</span><span class="arrow">▼</span></div>
+    <div class="acc-body">
+      <label>Название *</label>
+      <input type="text" id="noteTitle" placeholder="Памятка по...">
+      <label>Категория</label>
+      <select id="noteCategory">
+        <option value="">— выбери —</option>
+        <option value="🫀 Кардиология">🫀 Кардиология</option>
+        <option value="🫁 Респираторные">🫁 Респираторные</option>
+        <option value="🩸 Эндокринология">🩸 Эндокринология</option>
+        <option value="🔪 Хирургия">🔪 Хирургия</option>
+        <option value="💊 Терапия">💊 Терапия</option>
+        <option value="🦠 Инфекции">🦠 Инфекции</option>
+        <option value="🧪 Диагностика">🧪 Диагностика</option>
+        <option value="📋 Общее">📋 Общее</option>
+      </select>
+      <label>Текст *</label>
+      <textarea id="noteBody" placeholder="Вставь текст..."></textarea>
+      <button class="btn" onclick="addNote()">Сохранить</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>📋 Мои памятки</h3>
+    <input type="text" class="search-box" id="searchNote" placeholder="🔍 Поиск" oninput="renderNotes()">
+    <div id="notesList"></div>
+  </div>
+</div>
+
+<div class="tab-content" id="tab-settings">
+  <div class="card">
+    <h3>🔔 Уведомления</h3>
+    <p style="font-size:13px;color:var(--text-dim);">Разреши уведомления, чтобы получать напоминания о записях в шторке телефона.</p>
+    <button class="btn btn-blue" id="permBtn" onclick="requestNotificationPermission()">🔔 Разрешить уведомления</button>
+    <div class="settings-info" id="permInfo">Статус: проверяем...</div>
+  </div>
+  <div class="card">
+    <h3>🎨 Тема</h3>
+    <div class="theme-switch">
+      <button id="theme-light" onclick="setTheme('light')">☀️ Светлая</button>
+      <button id="theme-dark" onclick="setTheme('dark')">🌙 Тёмная</button>
+      <button id="theme-system" onclick="setTheme('system')">📱 Системная</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3>👥 Пациенты</h3>
+    <button class="btn btn-green" onclick="exportPatients()">📤 Экспорт</button>
+    <input type="file" id="importPatientsFile" accept=".json" style="display:none" onchange="importPatients(event)">
+    <button class="btn btn-blue" onclick="document.getElementById('importPatientsFile').click()">📥 Импорт</button>
+    <div class="settings-info" id="patientsInfo">Пациентов: 0</div>
+  </div>
+  <div class="card">
+    <h3>💊 Препараты</h3>
+    <button class="btn btn-green" onclick="exportDrugs()">📤 Экспорт</button>
+    <input type="file" id="importDrugsFile" accept=".json" style="display:none" onchange="importDrugs(event)">
+    <button class="btn btn-blue" onclick="document.getElementById('importDrugsFile').click()">📥 Импорт</button>
+    <div class="settings-info" id="drugsInfo">Препаратов: 0</div>
+  </div>
+  <div class="card">
+    <h3>📋 Памятки</h3>
+    <button class="btn btn-green" onclick="exportNotes()">📤 Экспорт</button>
+    <input type="file" id="importNotesFile" accept=".json" style="display:none" onchange="importNotes(event)">
+    <button class="btn btn-blue" onclick="document.getElementById('importNotesFile').click()">📥 Импорт</button>
+    <div class="settings-info" id="notesInfo">Памяток: 0</div>
+  </div>
+  <div class="card">
+    <h3>📅 Записи</h3>
+    <button class="btn btn-green" onclick="exportAppts()">📤 Экспорт</button>
+    <input type="file" id="importApptsFile" accept=".json" style="display:none" onchange="importAppts(event)">
+    <button class="btn btn-blue" onclick="document.getElementById('importApptsFile').click()">📥 Импорт</button>
+    <div class="settings-info" id="apptsInfo">Записей: 0</div>
+  </div>
+  <div class="card">
+    <h3>💾 Полный бэкап</h3>
+    <button class="btn btn-orange" onclick="exportAll()">📤 Экспорт всего</button>
+    <input type="file" id="importAllFile" accept=".json" style="display:none" onchange="importAll(event)">
+    <button class="btn btn-orange" onclick="document.getElementById('importAllFile').click()">📥 Импорт всего</button>
+    <div class="settings-info" id="fullInfo">—</div>
+  </div>
+  <div class="card">
+    <h3>🗑 Опасная зона</h3>
+    <button class="btn btn-red" onclick="clearAll()">Удалить все данные</button>
+  </div>
+</div>
+
+<nav class="bottom-nav" id="bottomNav">
+  <button onclick="goTo('home')" id="nav-home">
+    <svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg>
+    <span class="bn-label">Главная</span>
+  </button>
+  <button onclick="goTo('calc')" id="nav-calc">
+    <svg viewBox="0 0 24 24"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="10" y2="14"/><line x1="14" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="10" y2="18"/><line x1="14" y1="18" x2="16" y2="18"/></svg>
+    <span class="bn-label">Расчёт</span>
+  </button>
+  <button onclick="goTo('calendar')" id="nav-calendar">
+    <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/><circle cx="8" cy="14" r="1"/><circle cx="12" cy="14" r="1"/><circle cx="16" cy="14" r="1"/><circle cx="8" cy="18" r="1"/><circle cx="12" cy="18" r="1"/></svg>
+    <span class="bn-label">Календарь</span>
+    <span class="bn-badge" id="navCalendarBadge" style="display:none;">0</span>
+  </button>
+  <button onclick="goTo('search')" id="nav-search">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16" y1="16" x2="21" y2="21"/></svg>
+    <span class="bn-label">Пациенты</span>
+  </button>
+  <button onclick="goTo('add')" id="nav-add">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+    <span class="bn-label">Добавить</span>
+  </button>
+  <button onclick="goTo('drugs')" id="nav-drugs">
+    <svg viewBox="0 0 24 24"><path d="M10.5 20.5a5 5 0 0 1-7-7l8-8a5 5 0 0 1 7 7l-8 8z"/><line x1="8.5" y1="8.5" x2="15.5" y2="15.5"/></svg>
+    <span class="bn-label">Препараты</span>
+  </button>
+  <button onclick="goTo('notes')" id="nav-notes">
+    <svg viewBox="0 0 24 24"><path d="M4 4a2 2 0 0 1 2-2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+    <span class="bn-label">Памятки</span>
+  </button>
+  <button onclick="goTo('settings')" id="nav-settings">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <span class="bn-label">Настройки</span>
+  </button>
+</nav>
+
+<script src="app.js"></script>
+</body>
+</html>
