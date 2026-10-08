@@ -1,7 +1,7 @@
 {
-  "versionCode": 2,
-  "versionName": "1.0.2",
-  "apkUrl": "https://github.com/WarizerNir/vetapp/releases/download/v1.0.2/VetApp-1.0.2.apk",
-  "changelog": "Первая версия с работающим автообновлением",
+  "versionCode": 3,
+  "versionName": "1.0.3",
+  "apkUrl": "https://warizernir.github.io/vetapp/VetApp-1.0.2.apk",
+  "changelog": "Тест автообновления через Pages",
   "force": false
 }
