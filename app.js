@@ -1492,3 +1492,49 @@ async function rescheduleAllNotifications() {
     console.error('Ошибка rescheduleAll:', e);
   }
 }
+
+/* ==== АВТООБНОВЛЕНИЕ APK ==== */
+var Filesystem = window.Capacitor?.Plugins?.Filesystem;
+var FileOpener = window.Capacitor?.Plugins?.FileOpener;
+
+var UPDATE_JSON_URL = 'https://warizernir.github.io/vetapp/version.json';
+
+async function checkForUpdate() {
+    if (!Filesystem || !FileOpener) {
+        console.log('Не APK, пропускаю проверку обновлений');
+        return;
+    }
+    try {
+        var res = await fetch(UPDATE_JSON_URL + '?t=' + Date.now());
+        var info = await res.json();
+
+        var App = window.Capacitor?.Plugins?.App;
+        var appInfo = await App.getInfo();
+        var currentCode = parseInt(appInfo.build, 10) || 0;
+
+        if (info.versionCode <= currentCode) {
+            console.log('Версия актуальна:', currentCode);
+            return;
+        }
+
+        if (!confirm('Доступно обновление VetApp ' + info.versionName + '\n\n' +
+                     (info.changelog || '') + '\n\nУстановить?')) {
+            return;
+        }
+
+        var download = await Filesystem.downloadFile({
+            url: info.apkUrl,
+            path: 'VetApp-' + info.versionCode + '.apk',
+            directory: 'CACHE'
+        });
+
+        await FileOpener.open({
+            filePath: download.path,
+            contentType: 'application/vnd.android.package-archive'
+        });
+    } catch (e) {
+        console.error('Ошибка обновления:', e);
+    }
+}
+
+setTimeout(checkForUpdate, 3000);
