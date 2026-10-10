@@ -1,6 +1,6 @@
 {
-  "versionCode": 2,
-  "versionName": "1.1.0",
-  "apkUrl": "https://github.com/WarizerNir/vetapp/releases/download/v1.1.0/VetApp-1.1.0-release.apk",
-  "changelog": "Возраст из даты рождения, пикеры даты/времени, автоочистка калькуляторов, 12 категорий препаратов, шаблоны записей, статистика за месяц, новый дизайн."
+  "versionCode": 3,
+  "versionName": "1.1.1",
+  "apkUrl": "https://github.com/WarizerNir/vetapp/releases/download/v1.1.1/VetApp-1.1.1-release.apk",
+  "changelog": "Экспорт и импорт препаратов и памяток, «Поделиться базой» одним файлом, чистые дозы без латыни."
 }
