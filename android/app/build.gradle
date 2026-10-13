@@ -26,8 +26,8 @@ android {
         applicationId "com.dima.vetapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-    versionCode 4
-    versionName "1.1.2"
+    versionCode 5
+    versionName "1.1.3"
         archivesBaseName = "VetApp-" + versionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
