@@ -21,9 +21,9 @@ cd ..
 echo.
 echo [3/3] Готово!
 echo.
-echo APK: %~dp0android\app\release\
+echo APK: %~dp0android\app\build\outputs\apk\release\
 echo.
-explorer "%~dp0android\app\release"
+explorer "%~dp0android\app\build\outputs\apk\release"
 pause
 exit /b 0
 

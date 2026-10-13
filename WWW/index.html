@@ -275,7 +275,7 @@
     <div class="acc-body">
       <label>Название *</label>
       <input type="text" id="dName" placeholder="Амоксиклав">
-            <label>Категория</label>
+      <label>Категория</label>
       <select id="dCategory">
         <option value="">— выбери —</option>
         <option value="💊 Антибиотики">💊 Антибиотики</option>
@@ -340,6 +340,7 @@
 <div class="tab-content" id="tab-stats">
   <div id="statsContent"></div>
 </div>
+
 <div class="tab-content" id="tab-settings">
   <div class="card">
     <h3>🔔 Уведомления</h3>
@@ -347,7 +348,7 @@
     <button class="btn btn-blue" id="permBtn" onclick="requestNotificationPermission()">🔔 Разрешить уведомления</button>
     <div class="settings-info" id="permInfo">Статус: проверяем...</div>
   </div>
-  <  <div class="card">
+  <div class="card">
     <h3>🎨 Тема</h3>
     <div class="theme-switch">
       <button id="theme-light" onclick="setTheme('light')">☀️ Светлая</button>
@@ -466,11 +467,6 @@
       <span class="tp-sep">:</span>
       <select id="timePickerMinutes"></select>
     </div>
-<div class="undo-toast" id="undoToast">
-  <div class="undo-text" id="undoText">Удалено</div>
-  <button class="undo-btn" onclick="confirmUndo()">Отменить</button>
-  <button class="undo-close" onclick="dismissUndo()">×</button>
-</div>
     <div class="dp-actions">
       <button class="dp-btn-secondary" onclick="closeTimePicker()">Отмена</button>
       <button class="dp-btn-primary" onclick="pickTime()">OK</button>
@@ -498,6 +494,12 @@
       <button class="tbp-btn-secondary" onclick="closeTextBlockPicker()">Отмена</button>
     </div>
   </div>
+</div>
+
+<div class="undo-toast" id="undoToast">
+  <div class="undo-text" id="undoText">Удалено</div>
+  <button class="undo-btn" onclick="confirmUndo()">Отменить</button>
+  <button class="undo-close" onclick="dismissUndo()">×</button>
 </div>
 
 <script src="app.js"></script>

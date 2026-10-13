@@ -61,3 +61,8 @@ Desktop.ini
 *.log
 .env
 .env.local
+
+android/app/release/
+android/app/build/
+*.dm
+output-metadata.json
