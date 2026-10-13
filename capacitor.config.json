@@ -1,0 +1,8 @@
+{
+  "appId": "com.dima.vetapp",
+  "appName": "vetapp",
+  "webDir": "www",
+  "android": {
+    "webContentsDebuggingEnabled": true
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "versionCode": 4,
+  "versionName": "1.1.2",
+  "apkUrl": "https://github.com/WarizerNir/vetapp/releases/download/v1.1.2/VetApp-1.1.2-release.apk",
+  "changelog": "Системная кнопка «Назад», быстрые тексты, адаптация под шрифт, версионирование схемы, Undo после удаления."
+}

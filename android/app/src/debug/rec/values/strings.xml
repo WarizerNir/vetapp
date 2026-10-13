@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">VetApp Debug</string>
+    <string name="title_activity_main">VetApp Debug</string>
+</resources>

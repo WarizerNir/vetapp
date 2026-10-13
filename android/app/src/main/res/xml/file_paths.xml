@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Внешняя память (для картинок, камеры и т.п.) -->
+    <external-path name="external" path="." />
+    <!-- Кэш приложения (сюда качаем APK для обновления) -->
+    <cache-path name="cache" path="." />
+    <!-- Внутренние файлы приложения -->
+    <files-path name="files" path="." />
+</paths>
